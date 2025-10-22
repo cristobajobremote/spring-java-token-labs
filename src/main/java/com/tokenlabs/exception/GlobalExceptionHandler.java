@@ -1,7 +1,6 @@
 package com.tokenlabs.exception;
 
 import com.tokenlabs.dto.ErrorResponse;
-import com.tokenlabs.model.RequestHistory;
 import com.tokenlabs.service.RequestHistoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -23,11 +22,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

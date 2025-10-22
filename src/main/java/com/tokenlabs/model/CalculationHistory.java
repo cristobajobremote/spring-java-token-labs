@@ -1,7 +1,6 @@
 package com.tokenlabs.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
