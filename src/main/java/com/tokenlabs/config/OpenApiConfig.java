@@ -16,7 +16,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("Spring Java Token Labs API")
                         .version("1.0.0")
-                        .description("API REST para cálculos con porcentajes externos y caché Redis")
+                        .description("API REST para cálculos con porcentaje configurable y caché")
                         .contact(new Contact()
                                 .name("Token Labs Team")
                                 .email("contact@tokenlabs.com")

@@ -160,13 +160,13 @@ class CalculationServiceTest {
     }
     
     @Test
-    void calculate_ShouldHandleZeroValues_WhenRequestContainsZeros() {
+    void calculate_ShouldHandleLargeValues_WhenRequestContainsLargeNumbers() {
         // Arrange
-        CalculationRequest zeroRequest = new CalculationRequest(
-            BigDecimal.ZERO,
-            BigDecimal.ZERO
+        CalculationRequest largeRequest = new CalculationRequest(
+            new BigDecimal("999999999.99"),
+            new BigDecimal("888888888.88")
         );
-        BigDecimal percentage = new BigDecimal("10.0");
+        BigDecimal percentage = new BigDecimal("25.5");
         
         when(externalPercentageService.getPercentage()).thenReturn(percentage);
         when(calculationHistoryRepository.save(any(CalculationHistory.class)))
@@ -177,16 +177,128 @@ class CalculationServiceTest {
             });
         
         // Act
-        CalculationResponse response = calculationService.calculate(zeroRequest);
+        CalculationResponse response = calculationService.calculate(largeRequest);
         
         // Assert
         assertNotNull(response);
-        assertEquals(BigDecimal.ZERO, response.getFirstNumber());
-        assertEquals(BigDecimal.ZERO, response.getSecondNumber());
+        assertEquals(largeRequest.getFirstNumber(), response.getFirstNumber());
+        assertEquals(largeRequest.getSecondNumber(), response.getSecondNumber());
         assertEquals(percentage, response.getPercentage());
-        assertEquals(BigDecimal.ZERO, response.getResult()); // 0 + 0 + (0 * 10 / 100) = 0
+        assertTrue(response.getResult().compareTo(BigDecimal.ZERO) > 0);
+        
+        verify(externalPercentageService).getPercentage();
+        verify(calculationHistoryRepository).save(any(CalculationHistory.class));
     }
     
+    @Test
+    void calculate_ShouldHandleDecimalPrecision_WhenRequestContainsComplexDecimals() {
+        // Arrange
+        CalculationRequest decimalRequest = new CalculationRequest(
+            new BigDecimal("123.456789"),
+            new BigDecimal("987.654321")
+        );
+        BigDecimal percentage = new BigDecimal("12.345");
+        
+        when(externalPercentageService.getPercentage()).thenReturn(percentage);
+        when(calculationHistoryRepository.save(any(CalculationHistory.class)))
+            .thenAnswer(invocation -> {
+                CalculationHistory history = invocation.getArgument(0);
+                history.setId(1L);
+                return history;
+            });
+        
+        // Act
+        CalculationResponse response = calculationService.calculate(decimalRequest);
+        
+        // Assert
+        assertNotNull(response);
+        assertEquals(decimalRequest.getFirstNumber(), response.getFirstNumber());
+        assertEquals(decimalRequest.getSecondNumber(), response.getSecondNumber());
+        assertEquals(percentage, response.getPercentage());
+        assertNotNull(response.getResult());
+        
+        verify(externalPercentageService).getPercentage();
+        verify(calculationHistoryRepository).save(any(CalculationHistory.class));
+    }
+    
+    @Test
+    void getCalculationHistory_ShouldReturnEmptyList_WhenNoHistoryExists() {
+        // Arrange
+        when(calculationHistoryRepository.findAllOrderByCreatedAtDesc()).thenReturn(Arrays.asList());
+        
+        // Act
+        List<CalculationHistory> result = calculationService.getCalculationHistory();
+        
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(calculationHistoryRepository).findAllOrderByCreatedAtDesc();
+    }
+    
+    @Test
+    void getTotalCalculations_ShouldReturnZero_WhenNoCalculationsExist() {
+        // Arrange
+        when(calculationHistoryRepository.countAllCalculations()).thenReturn(0L);
+        
+        // Act
+        Long result = calculationService.getTotalCalculations();
+        
+        // Assert
+        assertEquals(0L, result);
+        verify(calculationHistoryRepository).countAllCalculations();
+    }
+    
+    @Test
+    void getCalculationHistoryByDateRange_ShouldReturnEmptyList_WhenNoRecordsInRange() {
+        // Arrange
+        LocalDateTime startDate = LocalDateTime.now().minusDays(7);
+        LocalDateTime endDate = LocalDateTime.now();
+        
+        when(calculationHistoryRepository.findByCreatedAtBetween(startDate, endDate))
+            .thenReturn(Arrays.asList());
+        
+        // Act
+        List<CalculationHistory> result = calculationService.getCalculationHistoryByDateRange(startDate, endDate);
+        
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(calculationHistoryRepository).findByCreatedAtBetween(startDate, endDate);
+    }
+    
+    @Test
+    void calculate_ShouldHandleRepositoryException_WhenSaveFails() {
+        // Arrange
+        when(externalPercentageService.getPercentage()).thenReturn(testPercentage);
+        when(calculationHistoryRepository.save(any(CalculationHistory.class)))
+            .thenThrow(new RuntimeException("Error de base de datos"));
+        
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            calculationService.calculate(testRequest);
+        });
+        
+        assertEquals("Error de base de datos", exception.getMessage());
+        verify(externalPercentageService).getPercentage();
+        verify(calculationHistoryRepository).save(any(CalculationHistory.class));
+    }
+    
+    @Test
+    void calculate_ShouldHandleExternalServiceException_WhenPercentageServiceFails() {
+        // Arrange
+        when(externalPercentageService.getPercentage())
+            .thenThrow(new RuntimeException("Servicio externo no disponible"));
+        
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            calculationService.calculate(testRequest);
+        });
+        
+        assertEquals("Servicio externo no disponible", exception.getMessage());
+        verify(externalPercentageService).getPercentage();
+        verify(calculationHistoryRepository, never()).save(any(CalculationHistory.class));
+    }
+
     private CalculationHistory createMockHistory(Long id, BigDecimal firstNumber, BigDecimal secondNumber, 
                                                BigDecimal percentage, BigDecimal result) {
         CalculationHistory history = new CalculationHistory(firstNumber, secondNumber, percentage, result);

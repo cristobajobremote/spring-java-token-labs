@@ -51,6 +51,11 @@ management:
       exposure:
         include: health,info,metrics,caches
 
+# Configuración personalizada de la aplicación
+app:
+  external:
+    percentage: 15.75  # Porcentaje configurable para cálculos
+
 ---
 spring:
   config:

@@ -1,0 +1,711 @@
+{
+	"info": {
+		"_postman_id": "a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7",
+		"name": "Spring Java Token Labs API",
+		"description": "Colección completa de endpoints para la API de Spring Java Token Labs con manejo de caché, fallos del servicio externo y historial de requests.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "123456"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health"
+							]
+						},
+						"description": "Verificar el estado de salud de la aplicación"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para verificar el estado de la aplicación"
+		},
+		{
+			"name": "Cálculos",
+			"item": [
+				{
+					"name": "Realizar Cálculo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 10.5,\n  \"secondNumber\": 20.25\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Realizar un cálculo sumando dos números y aplicando un porcentaje del servicio externo"
+					},
+					"response": []
+				},
+				{
+					"name": "Estadísticas de Cálculos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stats"
+							]
+						},
+						"description": "Obtener estadísticas básicas de los cálculos realizados"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints principales para realizar cálculos"
+		},
+		{
+			"name": "Historial de Cálculos",
+			"item": [
+				{
+					"name": "Get Calculations History - Basic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Tamaño de página"
+								}
+							]
+						},
+						"description": "Obtener historial de cálculos con paginación básica"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Calculations History - With Sorting",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=0&size=5&sortBy=result&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "5",
+									"description": "Tamaño de página"
+								},
+								{
+									"key": "sortBy",
+									"value": "result",
+									"description": "Campo para ordenar"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc",
+									"description": "Dirección de ordenamiento (asc/desc)"
+								}
+							]
+						},
+						"description": "Obtener historial de cálculos ordenado por resultado descendente"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Calculations History - With Date Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=0&size=10&startDate=2025-10-22T00:00:00&endDate=2025-10-22T23:59:59",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Tamaño de página"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-10-22T00:00:00",
+									"description": "Fecha de inicio (ISO format)"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-22T23:59:59",
+									"description": "Fecha de fin (ISO format)"
+								}
+							]
+						},
+						"description": "Obtener historial de cálculos filtrado por rango de fechas"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Calculations History - Pagination Test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=1&size=5&sortBy=createdAt&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Segunda página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "5",
+									"description": "Tamaño de página"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdAt",
+									"description": "Ordenar por fecha de creación"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc",
+									"description": "Orden descendente"
+								}
+							]
+						},
+						"description": "Probar paginación en la segunda página"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para consultar el historial de cálculos realizados"
+		},
+		{
+			"name": "Gestión de Historial de Requests",
+			"item": [
+				{
+					"name": "Get Request History - Basic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Tamaño de página"
+								}
+							]
+						},
+						"description": "Obtener historial básico de requests con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request History - With Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=5&endpoint=/api/v1/calculate&httpMethod=POST&responseStatus=200",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "5",
+									"description": "Tamaño de página"
+								},
+								{
+									"key": "endpoint",
+									"value": "/api/v1/calculate",
+									"description": "Filtrar por endpoint específico"
+								},
+								{
+									"key": "httpMethod",
+									"value": "POST",
+									"description": "Filtrar por método HTTP"
+								},
+								{
+									"key": "responseStatus",
+									"value": "200",
+									"description": "Filtrar por código de respuesta"
+								}
+							]
+						},
+						"description": "Obtener historial de requests con filtros específicos"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request History - Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=10&startDate=2025-10-22T00:00:00&endDate=2025-10-22T23:59:59&sortBy=requestDate&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Tamaño de página"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-10-22T00:00:00",
+									"description": "Fecha de inicio (ISO format)"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-22T23:59:59",
+									"description": "Fecha de fin (ISO format)"
+								},
+								{
+									"key": "sortBy",
+									"value": "requestDate",
+									"description": "Ordenar por fecha de request"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc",
+									"description": "Orden descendente"
+								}
+							]
+						},
+						"description": "Obtener historial de requests filtrado por rango de fechas"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request History - Error Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=10&hasError=true&sortBy=requestDate&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (0-based)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Tamaño de página"
+								},
+								{
+									"key": "hasError",
+									"value": "true",
+									"description": "Filtrar solo requests con errores"
+								},
+								{
+									"key": "sortBy",
+									"value": "requestDate",
+									"description": "Ordenar por fecha de request"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc",
+									"description": "Orden descendente"
+								}
+							]
+						},
+						"description": "Obtener historial de requests que contienen errores"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request History Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history",
+								"stats"
+							]
+						},
+						"description": "Obtener estadísticas del historial de requests"
+					},
+					"response": []
+				},
+				{
+					"name": "Cleanup Old Records",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history/cleanup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history",
+								"cleanup"
+							]
+						},
+						"description": "Limpiar registros antiguos del historial de requests"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestionar el historial detallado de requests"
+		},
+		{
+			"name": "Testing de Caché",
+			"item": [
+				{
+					"name": "Clear Cache",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/cache-clear",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"cache-clear"
+							]
+						},
+						"description": "Limpiar el caché de porcentajes manualmente"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para testing del sistema de caché"
+		},
+		{
+			"name": "External Service Failure Tests",
+			"item": [
+				{
+					"name": "Simulate External Service Failure",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/simulate-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"simulate-failure"
+							]
+						},
+						"description": "Activar simulación de fallo del servicio externo"
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Failure Simulation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/disable-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"disable-failure"
+							]
+						},
+						"description": "Desactivar simulación de fallo del servicio externo"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Failure Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/failure-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"failure-status"
+							]
+						},
+						"description": "Verificar el estado de la simulación de fallo"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Failure with Cache Available",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 5,\n  \"secondNumber\": 15\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Probar cálculo con fallo activado pero caché disponible (debe funcionar)"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Failure with Empty Cache",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 3,\n  \"secondNumber\": 7\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Probar cálculo con fallo activado y caché vacío (debe fallar con error 500)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para testing del manejo de fallos del servicio externo"
+		},
+		{
+			"name": "Documentación API",
+			"item": [
+				{
+					"name": "Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/swagger-ui/index.html",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"swagger-ui",
+								"index.html"
+							]
+						},
+						"description": "Acceder a la documentación interactiva de la API (Swagger UI)"
+					},
+					"response": []
+				},
+				{
+					"name": "OpenAPI JSON",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/api-docs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						},
+						"description": "Obtener la especificación OpenAPI en formato JSON"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para acceder a la documentación de la API"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

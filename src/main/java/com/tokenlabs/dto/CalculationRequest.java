@@ -38,4 +38,27 @@ public class CalculationRequest {
     public void setSecondNumber(BigDecimal secondNumber) {
         this.secondNumber = secondNumber;
     }
+    
+    // Métodos equals, hashCode y toString
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CalculationRequest that = (CalculationRequest) o;
+        return java.util.Objects.equals(firstNumber, that.firstNumber) &&
+               java.util.Objects.equals(secondNumber, that.secondNumber);
+    }
+    
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(firstNumber, secondNumber);
+    }
+    
+    @Override
+    public String toString() {
+        return "CalculationRequest{" +
+                "firstNumber=" + firstNumber +
+                ", secondNumber=" + secondNumber +
+                '}';
+    }
 }

@@ -13,6 +13,11 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.time.LocalDateTime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 @Transactional
@@ -28,7 +33,7 @@ public class CalculationService {
     
     /**
      * Realiza el cálculo principal: suma dos números y aplica un porcentaje
-     * obtenido del servicio externo.
+     * obtenido del servicio externo como se especifica por tenpo
      * 
      * @param request Request con los dos números a sumar
      * @return CalculationResponse con el resultado del cálculo
@@ -105,5 +110,49 @@ public class CalculationService {
             java.time.LocalDateTime endDate) {
         logger.info("Obteniendo historial de cálculos entre {} y {}", startDate, endDate);
         return calculationHistoryRepository.findByCreatedAtBetween(startDate, endDate);
+    }
+    
+    /**
+     * Obtiene el historial de cálculos con paginación y filtros opcionales.
+     * 
+     * @param page Número de página (0-based)
+     * @param size Tamaño de página
+     * @param sortBy Campo para ordenar
+     * @param sortDirection Dirección de ordenamiento (asc/desc)
+     * @param startDate Fecha de inicio (opcional)
+     * @param endDate Fecha de fin (opcional)
+     * @return Page de CalculationHistory
+     */
+    @Transactional(readOnly = true)
+    public Page<CalculationHistory> getCalculationHistory(
+            int page, int size, String sortBy, String sortDirection,
+            LocalDateTime startDate, LocalDateTime endDate) {
+        
+        logger.info("Obteniendo historial de cálculos paginado - página: {}, tamaño: {}, orden: {} {}", 
+                   page, size, sortBy, sortDirection);
+        
+        // Crear objeto de ordenamiento
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? 
+            Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+        
+        // Crear objeto de paginación
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        // Si hay filtros de fecha, usar método específico del repositorio
+        if (startDate != null && endDate != null) {
+            logger.info("Aplicando filtro de fechas: {} - {}", startDate, endDate);
+            return calculationHistoryRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+        } else if (startDate != null) {
+            logger.info("Aplicando filtro de fecha de inicio: {}", startDate);
+            return calculationHistoryRepository.findByCreatedAtAfter(startDate, pageable);
+        } else if (endDate != null) {
+            logger.info("Aplicando filtro de fecha de fin: {}", endDate);
+            return calculationHistoryRepository.findByCreatedAtBefore(endDate, pageable);
+        } else {
+            // Sin filtros de fecha, obtener todos los registros
+            logger.info("Obteniendo todos los registros sin filtros de fecha");
+            return calculationHistoryRepository.findAll(pageable);
+        }
     }
 }

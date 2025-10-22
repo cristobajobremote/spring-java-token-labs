@@ -5,6 +5,8 @@ import com.tokenlabs.dto.CalculationRequest;
 import com.tokenlabs.dto.CalculationResponse;
 import com.tokenlabs.model.CalculationHistory;
 import com.tokenlabs.service.CalculationService;
+import com.tokenlabs.service.ExternalPercentageService;
+import com.tokenlabs.service.ExternalServiceFailureSimulator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -31,6 +34,12 @@ class CalculationControllerTest {
     
     @MockBean
     private CalculationService calculationService;
+    
+    @MockBean
+    private ExternalPercentageService externalPercentageService;
+    
+    @MockBean
+    private ExternalServiceFailureSimulator failureSimulator;
     
     @Autowired
     private ObjectMapper objectMapper;
@@ -182,6 +191,127 @@ class CalculationControllerTest {
                 .andExpect(status().isInternalServerError());
     }
     
+    // ========== TESTS PARA ENDPOINTS DE TESTING ==========
+    
+    @Test
+    void clearCache_ShouldReturnOk_WhenCalled() throws Exception {
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/test/cache-clear"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.message").value("Caché de porcentajes limpiado exitosamente"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void simulateFailure_ShouldReturnOk_WhenCalled() throws Exception {
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/test/simulate-failure"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.message").value("Simulación de fallo del servicio externo activada"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void disableFailure_ShouldReturnOk_WhenCalled() throws Exception {
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/test/disable-failure"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.message").value("Simulación de fallo del servicio externo desactivada"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void getFailureStatus_ShouldReturnOk_WhenCalled() throws Exception {
+        // Arrange
+        when(failureSimulator.isFailureSimulationActive()).thenReturn(false);
+        
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/test/failure-status"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.failureSimulationActive").value(false))
+                .andExpect(jsonPath("$.message").value("Simulación de fallo inactiva"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void getFailureStatus_ShouldReturnActiveStatus_WhenSimulationIsActive() throws Exception {
+        // Arrange
+        when(failureSimulator.isFailureSimulationActive()).thenReturn(true);
+        
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/test/failure-status"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.failureSimulationActive").value(true))
+                .andExpect(jsonPath("$.message").value("Simulación de fallo activa"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void clearCache_ShouldReturnInternalServerError_WhenServiceThrowsException() throws Exception {
+        // Arrange
+        doThrow(new RuntimeException("Error al limpiar caché")).when(externalPercentageService).clearCache();
+        
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/test/cache-clear"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message").value("Error al limpiar caché: Error al limpiar caché"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void simulateFailure_ShouldReturnInternalServerError_WhenServiceThrowsException() throws Exception {
+        // Arrange
+        doThrow(new RuntimeException("Error al activar simulación")).when(failureSimulator).enableFailureSimulation();
+        
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/test/simulate-failure"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message").value("Error al activar simulación: Error al activar simulación"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void disableFailure_ShouldReturnInternalServerError_WhenServiceThrowsException() throws Exception {
+        // Arrange
+        doThrow(new RuntimeException("Error al desactivar simulación")).when(failureSimulator).disableFailureSimulation();
+        
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/test/disable-failure"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message").value("Error al desactivar simulación: Error al desactivar simulación"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+    
+    @Test
+    void getFailureStatus_ShouldReturnInternalServerError_WhenServiceThrowsException() throws Exception {
+        // Arrange
+        when(failureSimulator.isFailureSimulationActive()).thenThrow(new RuntimeException("Error al consultar estado"));
+        
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/test/failure-status"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message").value("Error al consultar estado: Error al consultar estado"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
     private CalculationHistory createMockHistory(Long id, BigDecimal firstNumber, BigDecimal secondNumber, 
                                                BigDecimal percentage, BigDecimal result) {
         CalculationHistory history = new CalculationHistory(firstNumber, secondNumber, percentage, result);

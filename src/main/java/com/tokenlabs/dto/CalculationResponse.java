@@ -12,7 +12,9 @@ public class CalculationResponse {
     private LocalDateTime timestamp;
     
     // Constructores
-    public CalculationResponse() {}
+    public CalculationResponse() {
+        this.timestamp = LocalDateTime.now();
+    }
     
     public CalculationResponse(BigDecimal firstNumber, BigDecimal secondNumber, 
                               BigDecimal percentage, BigDecimal result) {
@@ -62,5 +64,33 @@ public class CalculationResponse {
     
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+    
+    // Métodos equals, hashCode y toString
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CalculationResponse that = (CalculationResponse) o;
+        return java.util.Objects.equals(firstNumber, that.firstNumber) &&
+               java.util.Objects.equals(secondNumber, that.secondNumber) &&
+               java.util.Objects.equals(percentage, that.percentage) &&
+               java.util.Objects.equals(result, that.result);
+    }
+    
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(firstNumber, secondNumber, percentage, result);
+    }
+    
+    @Override
+    public String toString() {
+        return "CalculationResponse{" +
+                "firstNumber=" + firstNumber +
+                ", secondNumber=" + secondNumber +
+                ", percentage=" + percentage +
+                ", result=" + result +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }

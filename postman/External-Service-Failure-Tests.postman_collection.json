@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8",
+		"name": "External Service Failure Tests",
+		"description": "Colección específica para probar el manejo de fallos del servicio externo y el comportamiento del caché.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "123456"
+	},
+	"item": [
+		{
+			"name": "Escenario 1: Servicio Normal",
+			"item": [
+				{
+					"name": "1.1 - Desactivar Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/disable-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"disable-failure"
+							]
+						},
+						"description": "Asegurar que la simulación de fallo esté desactivada"
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 - Limpiar Caché",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/cache-clear",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"cache-clear"
+							]
+						},
+						"description": "Limpiar el caché para empezar limpio"
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 - Cálculo Normal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 10,\n  \"secondNumber\": 20\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Realizar cálculo normal - debe funcionar y llenar el caché"
+					},
+					"response": []
+				}
+			],
+			"description": "Probar el comportamiento normal del servicio"
+		},
+		{
+			"name": "Escenario 2: Fallo con Caché Disponible",
+			"item": [
+				{
+					"name": "2.1 - Activar Simulación de Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/simulate-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"simulate-failure"
+							]
+						},
+						"description": "Activar la simulación de fallo del servicio externo"
+					},
+					"response": []
+				},
+				{
+					"name": "2.2 - Verificar Estado de Fallo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/failure-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"failure-status"
+							]
+						},
+						"description": "Verificar que la simulación de fallo esté activa"
+					},
+					"response": []
+				},
+				{
+					"name": "2.3 - Cálculo con Fallo y Caché",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 5,\n  \"secondNumber\": 15\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Realizar cálculo con fallo activado pero caché disponible - DEBE FUNCIONAR usando el valor del caché"
+					},
+					"response": []
+				}
+			],
+			"description": "Probar el comportamiento cuando hay fallo pero caché disponible"
+		},
+		{
+			"name": "Escenario 3: Fallo sin Caché",
+			"item": [
+				{
+					"name": "3.1 - Limpiar Caché",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/cache-clear",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"cache-clear"
+							]
+						},
+						"description": "Limpiar el caché para simular escenario sin caché disponible"
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 - Verificar Estado de Fallo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/failure-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"failure-status"
+							]
+						},
+						"description": "Verificar que la simulación de fallo siga activa"
+					},
+					"response": []
+				},
+				{
+					"name": "3.3 - Cálculo con Fallo y Sin Caché",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 3,\n  \"secondNumber\": 7\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Realizar cálculo con fallo activado y sin caché - DEBE FALLAR con error 500"
+					},
+					"response": []
+				}
+			],
+			"description": "Probar el comportamiento cuando hay fallo y NO hay caché disponible"
+		},
+		{
+			"name": "Escenario 4: Recuperación del Servicio",
+			"item": [
+				{
+					"name": "4.1 - Desactivar Simulación de Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/disable-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"disable-failure"
+							]
+						},
+						"description": "Desactivar la simulación de fallo para simular recuperación del servicio"
+					},
+					"response": []
+				},
+				{
+					"name": "4.2 - Verificar Estado Normal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/failure-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"failure-status"
+							]
+						},
+						"description": "Verificar que la simulación de fallo esté desactivada"
+					},
+					"response": []
+				},
+				{
+					"name": "4.3 - Cálculo Normal Post-Recuperación",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 8,\n  \"secondNumber\": 12\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Realizar cálculo después de la recuperación - debe funcionar normalmente"
+					},
+					"response": []
+				}
+			],
+			"description": "Probar la recuperación del servicio después de un fallo"
+		},
+		{
+			"name": "Escenario 5: Pruebas de Resilencia",
+			"item": [
+				{
+					"name": "5.1 - Múltiples Cálculos con Caché",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 1,\n  \"secondNumber\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Primer cálculo para llenar caché"
+					},
+					"response": []
+				},
+				{
+					"name": "5.2 - Activar Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/simulate-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"simulate-failure"
+							]
+						},
+						"description": "Activar fallo después de llenar caché"
+					},
+					"response": []
+				},
+				{
+					"name": "5.3 - Cálculo Resiliente 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 2,\n  \"secondNumber\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Cálculo resiliente usando caché - debe funcionar"
+					},
+					"response": []
+				},
+				{
+					"name": "5.4 - Cálculo Resiliente 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 3,\n  \"secondNumber\": 3\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Segundo cálculo resiliente usando caché - debe funcionar"
+					},
+					"response": []
+				},
+				{
+					"name": "5.5 - Limpiar Caché Durante Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/cache-clear",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"cache-clear"
+							]
+						},
+						"description": "Limpiar caché mientras el fallo está activo"
+					},
+					"response": []
+				},
+				{
+					"name": "5.6 - Cálculo Sin Caché Durante Fallo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 4,\n  \"secondNumber\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Cálculo sin caché durante fallo - DEBE FALLAR con error 500"
+					},
+					"response": []
+				}
+			],
+			"description": "Probar la resilencia del sistema con múltiples escenarios"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

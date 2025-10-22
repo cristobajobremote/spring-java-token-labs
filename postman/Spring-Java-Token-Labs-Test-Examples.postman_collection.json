@@ -1,0 +1,706 @@
+{
+	"info": {
+		"_postman_id": "c9c9c9c9-c9c9-c9c9-c9c9-c9c9c9c9c9c9",
+		"name": "Spring Java Token Labs - Test Examples",
+		"description": "Ejemplos prácticos de uso de la API con diferentes escenarios de testing.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "123456"
+	},
+	"item": [
+		{
+			"name": "Ejemplos Básicos",
+			"item": [
+				{
+					"name": "Cálculo Simple",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 100,\n  \"secondNumber\": 200\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Ejemplo básico: 100 + 200 + 15.75% = 345.75"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculo con Decimales",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 10.5,\n  \"secondNumber\": 20.25\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Ejemplo con números decimales: 10.5 + 20.25 + 15.75% = 35.59"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculo con Números Pequeños",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 1,\n  \"secondNumber\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Ejemplo con números pequeños: 1 + 2 + 15.75% = 3.47"
+					},
+					"response": []
+				}
+			],
+			"description": "Ejemplos básicos de cálculos"
+		},
+		{
+			"name": "Consultas de Historial",
+			"item": [
+				{
+					"name": "Ver Últimos 5 Cálculos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=0&size=5&sortBy=createdAt&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Ver los últimos 5 cálculos realizados"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculos Ordenados por Resultado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=0&size=10&sortBy=result&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sortBy",
+									"value": "result"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Ver cálculos ordenados por resultado (mayor a menor)"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculos de Hoy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculations/history?page=0&size=20&startDate=2025-10-22T00:00:00&endDate=2025-10-22T23:59:59",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculations",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-10-22T00:00:00"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-22T23:59:59"
+								}
+							]
+						},
+						"description": "Ver todos los cálculos realizados hoy"
+					},
+					"response": []
+				}
+			],
+			"description": "Ejemplos de consultas al historial de cálculos"
+		},
+		{
+			"name": "Monitoreo de Requests",
+			"item": [
+				{
+					"name": "Ver Requests Recientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=10&sortBy=requestDate&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sortBy",
+									"value": "requestDate"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Ver los últimos 10 requests realizados"
+					},
+					"response": []
+				},
+				{
+					"name": "Requests con Errores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=10&hasError=true&sortBy=requestDate&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "hasError",
+									"value": "true"
+								},
+								{
+									"key": "sortBy",
+									"value": "requestDate"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Ver solo los requests que tuvieron errores"
+					},
+					"response": []
+				},
+				{
+					"name": "Requests de Cálculos Exitosos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history?page=0&size=10&endpoint=/api/v1/calculate&responseStatus=200&sortBy=requestDate&sortDirection=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "endpoint",
+									"value": "/api/v1/calculate"
+								},
+								{
+									"key": "responseStatus",
+									"value": "200"
+								},
+								{
+									"key": "sortBy",
+									"value": "requestDate"
+								},
+								{
+									"key": "sortDirection",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Ver solo los requests de cálculos que fueron exitosos"
+					},
+					"response": []
+				},
+				{
+					"name": "Estadísticas de Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/history/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"history",
+								"stats"
+							]
+						},
+						"description": "Ver estadísticas generales de todos los requests"
+					},
+					"response": []
+				}
+			],
+			"description": "Ejemplos de monitoreo y análisis de requests"
+		},
+		{
+			"name": "Testing de Caché",
+			"item": [
+				{
+					"name": "Verificar Caché Funcionando",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 50,\n  \"secondNumber\": 50\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Primer cálculo para llenar caché"
+					},
+					"response": []
+				},
+				{
+					"name": "Segundo Cálculo (Mismo Porcentaje)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 25,\n  \"secondNumber\": 25\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Segundo cálculo - debe usar el mismo porcentaje del caché"
+					},
+					"response": []
+				},
+				{
+					"name": "Limpiar Caché",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/cache-clear",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"cache-clear"
+							]
+						},
+						"description": "Limpiar el caché manualmente"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculo Post-Limpieza",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 75,\n  \"secondNumber\": 25\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Cálculo después de limpiar caché - debe obtener nuevo porcentaje del servicio externo"
+					},
+					"response": []
+				}
+			],
+			"description": "Ejemplos para probar el funcionamiento del caché"
+		},
+		{
+			"name": "Testing de Fallos",
+			"item": [
+				{
+					"name": "Preparar Caché",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 10,\n  \"secondNumber\": 20\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Llenar caché antes de simular fallo"
+					},
+					"response": []
+				},
+				{
+					"name": "Activar Simulación de Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/simulate-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"simulate-failure"
+							]
+						},
+						"description": "Activar simulación de fallo del servicio externo"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculo con Fallo y Caché",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 5,\n  \"secondNumber\": 15\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Cálculo con fallo activado pero caché disponible - DEBE FUNCIONAR"
+					},
+					"response": []
+				},
+				{
+					"name": "Limpiar Caché Durante Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/cache-clear",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"cache-clear"
+							]
+						},
+						"description": "Limpiar caché mientras el fallo está activo"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculo con Fallo y Sin Caché",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 3,\n  \"secondNumber\": 7\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Cálculo con fallo activado y sin caché - DEBE FALLAR con error 500"
+					},
+					"response": []
+				},
+				{
+					"name": "Desactivar Fallo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/test/disable-failure",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"test",
+								"disable-failure"
+							]
+						},
+						"description": "Desactivar simulación de fallo"
+					},
+					"response": []
+				},
+				{
+					"name": "Cálculo Post-Recuperación",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstNumber\": 8,\n  \"secondNumber\": 12\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/calculate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calculate"
+							]
+						},
+						"description": "Cálculo después de desactivar fallo - debe funcionar normalmente"
+					},
+					"response": []
+				}
+			],
+			"description": "Ejemplos para probar el manejo de fallos del servicio externo"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
